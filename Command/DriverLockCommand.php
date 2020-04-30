@@ -3,8 +3,8 @@
 namespace Lexik\Bundle\MaintenanceBundle\Command;
 
 use Lexik\Bundle\MaintenanceBundle\Drivers\AbstractDriver;
+use Lexik\Bundle\MaintenanceBundle\Drivers\DriverFactory;
 use Lexik\Bundle\MaintenanceBundle\Drivers\DriverTtlInterface;
-
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,6 +19,17 @@ use Symfony\Component\Console\Command\Command;
 class DriverLockCommand extends Command
 {
     protected $ttl;
+
+    /** @var DriverFactory */
+    protected $driverFactory;
+
+    /**
+     * @param DriverFactory $driverFactory
+     */
+    public function setDriverFactory($driverFactory)
+    {
+        $this->driverFactory = $driverFactory;
+    }
 
     /**
      * {@inheritdoc}
@@ -137,7 +148,7 @@ EOT
      */
     private function getDriver()
     {
-        return $this->getContainer()->get('lexik_maintenance.driver.factory')->getDriver();
+        return $this->driverFactory->getDriver();
     }
 
     /**

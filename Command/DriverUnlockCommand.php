@@ -2,9 +2,10 @@
 
 namespace Lexik\Bundle\MaintenanceBundle\Command;
 
+use Lexik\Bundle\MaintenanceBundle\Drivers\DriverFactory;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
 /**
  * Create an unlock action
@@ -12,8 +13,19 @@ use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
  * @package LexikMaintenanceBundle
  * @author  Gilles Gauthier <g.gauthier@lexik.fr>
  */
-class DriverUnlockCommand extends ContainerAwareCommand
+class DriverUnlockCommand extends Command
 {
+    /** @var DriverFactory */
+    protected $driverFactory;
+
+    /**
+     * @param DriverFactory $driverFactory
+     */
+    public function setDriverFactory($driverFactory)
+    {
+        $this->driverFactory = $driverFactory;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -39,7 +51,7 @@ EOT
             return;
         }
 
-        $driver = $this->getContainer()->get('lexik_maintenance.driver.factory')->getDriver();
+        $driver = $this->driverFactory->getDriver();
 
         $unlockMessage = $driver->getMessageUnlock($driver->unlock());
 
